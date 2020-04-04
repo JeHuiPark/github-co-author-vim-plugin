@@ -10,11 +10,7 @@ augroup vim_autocomplte_co_auth
 augroup END
 
 function! GetTeam()
-  if s:fallback
-    return s:message_prefix . ' name <email>'
-  endif
-
-  let records = readfile(expand(g:github_co_author_list_path))
+  let records = ReadRecord()
   
   let mem = []
 
@@ -30,5 +26,35 @@ function! GetTeam()
 
   call complete(col('.'), mem)
   return ''
+endfunction
+
+function! ReadRecord()
+  
+  if HasLocal()
+    return readfile(LocalPath())
+  endif
+
+  if s:fallback
+    return ['alias_section name <email>']
+  endif
+
+  return GlobalRecord()
+endfunction
+
+function! HasLocal()
+  let systemCommand = '[ -f ' . LocalPath() .  ' ] && echo 1 || echo 0'
+  return system(systemCommand)
+endfunction
+
+function! LocalPath()
+  let localFilePath = system('echo `git rev-parse --show-toplevel`/.git_author')
+  return substitute(localFilePath, '\n', '', '')
+endfunction
+
+function! GlobalRecord()
+  if s:fallback
+    abort
+  endif
+  return readfile(expand(g:github_co_author_list_path))
 endfunction
 
