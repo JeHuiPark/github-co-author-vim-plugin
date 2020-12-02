@@ -11,7 +11,7 @@ augroup END
 
 function! GetTeam()
   let records = ReadRecord()
-  
+
   let mem = []
 
   for record in records
@@ -19,9 +19,7 @@ function! GetTeam()
       continue
     endif
 
-    let cols = split(record)
-    let usernameAndEmail = cols[1] . ' ' . cols[2]
-    call add(mem, s:message_prefix . usernameAndEmail)
+    call add(mem, s:message_prefix . record)
   endfor
 
   call complete(col('.'), mem)
@@ -29,7 +27,6 @@ function! GetTeam()
 endfunction
 
 function! ReadRecord()
-  
   if HasLocal()
     return readfile(LocalPath())
   endif
