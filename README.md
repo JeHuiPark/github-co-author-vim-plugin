@@ -23,19 +23,30 @@ let g:github_co_author_list_path = '~/.vim/github-co-author-list'
 ### Local Config
 **Co Author Local Management File Path**
 
-`{git_work_space}/.git_author`  
+`{git_work_space}/.git_author`
+
 ![image](git_author_local_config_path.png)
 
 ### Co Author Management File Format
 ```
-alias1 name1 email1
-alias2 name2 email2
-alias3 name3 email3
+Alice <alice@example.com>
+Bob <bob@example.com>
+Charlie <charlie@example.com>
+```
+
+You can add authors from a github project using the output from `git shortlog -s -n -e` to the respective file:
+
+```shell
+# Local config
+git shortlog -s -n -e | cut -c8- > .git_author
+
+# Global config
+git shortlog -s -n -e | cut -c8- > ~/.vim/github-co-author-list
 ```
 
 ### Auto Complete Flow
 1. keymap
 1. hasLocal? return : next
 1. hasGlobal? return : next
-1. fallback return 
+1. fallback return
     > fallback message: `Co-Authored-By: name <email>`
