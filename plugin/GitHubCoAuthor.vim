@@ -6,11 +6,11 @@ if exists("g:github_co_author_list_path")
 endif
 
 augroup vim_autocomplte_co_auth
-  autocmd FileType gitcommit inoremap <C-l> <C-R>=GetTeam()<CR>
+  autocmd FileType gitcommit inoremap <C-l> <C-R>=GitHubCoAuthor#GetTeam()<CR>
 augroup END
 
-function! GetTeam()
-  let records = ReadRecord()
+function! GitHubCoAuthor#GetTeam()
+  let records = GitHubCoAuthor#ReadRecord()
 
   let mem = []
 
@@ -26,29 +26,29 @@ function! GetTeam()
   return ''
 endfunction
 
-function! ReadRecord()
-  if HasLocal()
-    return readfile(LocalPath())
+function! GitHubCoAuthor#ReadRecord()
+  if GitHubCoAuthor#HasLocal()
+    return readfile(GitHubCoAuthor#LocalPath())
   endif
 
   if s:fallback
     return ['alias_section name <email>']
   endif
 
-  return GlobalRecord()
+  return GitHubCoAuthor#GlobalRecord()
 endfunction
 
-function! HasLocal()
-  let systemCommand = '[ -f ' . LocalPath() .  ' ] && echo 1 || echo 0'
+function! GitHubCoAuthor#HasLocal()
+  let systemCommand = '[ -f ' . GitHubCoAuthor#LocalPath() .  ' ] && echo 1 || echo 0'
   return system(systemCommand)
 endfunction
 
-function! LocalPath()
+function! GitHubCoAuthor#LocalPath()
   let localFilePath = system('echo `git rev-parse --show-toplevel`/.git_author')
   return substitute(localFilePath, '\n', '', '')
 endfunction
 
-function! GlobalRecord()
+function! GitHubCoAuthor#GlobalRecord()
   if s:fallback
     abort
   endif
